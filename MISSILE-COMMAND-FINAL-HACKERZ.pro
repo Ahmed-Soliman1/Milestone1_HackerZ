@@ -11,10 +11,12 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    missile.cpp \
     player.cpp
 
 HEADERS += \
     mainwindow.h \
+    missile.h \
     player.h
 
 FORMS += \

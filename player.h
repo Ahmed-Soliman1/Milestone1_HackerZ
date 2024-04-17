@@ -10,6 +10,11 @@ class Player : public QObject, public QGraphicsRectItem
 public:
     explicit Player(QGraphicsItem *parent = nullptr);
 
+    static int scoreValue;
+    static QGraphicsTextItem* score;
+    static int healthValue;
+    static QGraphicsTextItem* health;
+
 signals:
     void leftClicked();
 
