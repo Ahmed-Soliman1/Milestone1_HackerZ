@@ -7,10 +7,10 @@ class Missile: public QObject, public QGraphicsEllipseItem
 {
     Q_OBJECT
 public:
-    Missile(int x, int y);
+    Missile(int x, int y, bool);
     int xleft;
     int yleft;
-    int steps;
+    double steps;
     bool bonus;
 
 public slots:

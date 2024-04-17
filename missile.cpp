@@ -10,7 +10,8 @@ QBrush yellowBrush(Qt::yellow);
 QBrush blueBrush(Qt::blue);
 QBrush redBrush(Qt::red);
 
-Missile::Missile(int x,int y): QObject(), QGraphicsEllipseItem() {
+Missile::Missile(int x,int y, bool bon): QObject(), QGraphicsEllipseItem() {
+    bonus =bon;
     if(bonus)
     {
         setRect(0,0,75,75);
