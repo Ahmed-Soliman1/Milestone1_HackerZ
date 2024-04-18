@@ -1,6 +1,7 @@
 #include "player.h"
 #include <QGraphicsSceneMouseEvent>
 #include <QCursor>
+#include "missile.h"
 
 Player::Player(QGraphicsItem *parent) : QObject(), QGraphicsRectItem(parent)
 {
@@ -24,3 +25,7 @@ void Player::mousePressEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsRectItem::mousePressEvent(event);
 }
 
+void Player::leftClicked()
+{
+    Missile* missile=new Missile(pos().x(),pos().y(),false);
+}
