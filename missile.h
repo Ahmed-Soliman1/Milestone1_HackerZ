@@ -1,21 +1,26 @@
+// missile.h
 #ifndef MISSILE_H
 #define MISSILE_H
-#include <QGraphicsItem>
-#include <QObject>
 
-class Missile: public QObject, public QGraphicsEllipseItem
+#include <QObject>
+#include <QGraphicsLineItem>
+#include <QGraphicsEllipseItem>
+#include <QTimer>
+
+class Missile : public QObject, public QGraphicsItemGroup
 {
     Q_OBJECT
 public:
-    Missile(int x, int y, bool);
-    int xleft;
-    int yleft;
-    double steps;
-    bool bonus;
+    Missile(int startX, int startY, int endX, int endY, QGraphicsItem *parent = nullptr);
 
 public slots:
-    void move();
     void explode();
+    void move();
+
+private:
+    QGraphicsLineItem *line;
+    QGraphicsEllipseItem *explosion;
+    QTimer timer;
 };
 
 #endif // MISSILE_H

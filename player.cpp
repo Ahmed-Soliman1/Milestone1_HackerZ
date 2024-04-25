@@ -1,31 +1,50 @@
 #include "player.h"
 #include <QGraphicsSceneMouseEvent>
 #include <QCursor>
+#include <QKeyEvent>
+
+#include <QGraphicsScene>
 #include "missile.h"
 
-Player::Player(QGraphicsItem *parent) : QObject(), QGraphicsRectItem(parent)
-{
-    setRect(-200, -200, 400, 400); // Size of the rectangle
-    setFlag(QGraphicsItem::ItemIsFocusable);
-    setAcceptHoverEvents(true);
+Player::Player() {
+    // Load player image and set its size
+    setPixmap(QPixmap(":/images/cursor.png"));
 
-    // Create a cursor with the desired shape
-    QCursor cursor(Qt::CrossCursor);
+    setScale(0.5);
 
-    // Set the cursor for the player object
-    setCursor(cursor);
 }
 
-void Player::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void Player::keyPressEvent(QKeyEvent *event)
 {
-    if (event->button() == Qt::LeftButton) {
-        emit leftClicked();
+    // *******  Event Handling for the Player ********
+    if(event->key()== Qt::Key_Left)
+    {
+        if(x()>4.8)
+        {
+            setPos(x()-10,y());
+        }
     }
+    else if(event->key()== Qt::Key_Right)
+    { if(x()< 775)
+            setPos(x()+10,y());
+    }
+    else if(event->key()== Qt::Key_Up)
+    { if(y()>0)
+            setPos(x(),y()-10);
+    }
+    else if(event->key()== Qt::Key_Down)
+    { if(y()<500)
+            setPos(x(),y()+10);
+    }
+    else if(event->key()== Qt::Key_Space)
+    {
+        // Get the scene position of the player
+        QPointF scenePos = mapToScene(0, 0);
 
-    QGraphicsRectItem::mousePressEvent(event);
-}
+        // Calculate the scene position of the player manually
+        QPointF spaceBarPos(scenePos.x() + pos().x(), scenePos.y() + pos().y());
 
-void Player::leftClicked()
-{
-    Missile* missile=new Missile(pos().x(),pos().y(),false);
+        emit spaceBarPressed(spaceBarPos);
+
+    }
 }

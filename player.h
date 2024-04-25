@@ -4,22 +4,18 @@
 #include <QObject>
 #include <QGraphicsRectItem>
 
-class Player : public QObject, public QGraphicsRectItem
-{
-    Q_OBJECT
+class Player : public QObject,  public QGraphicsPixmapItem
+{Q_OBJECT
 public:
-    explicit Player(QGraphicsItem *parent = nullptr);
+    Player();
 
+    void keyPressEvent(QKeyEvent * event);
     static int scoreValue;
     static QGraphicsTextItem* score;
     static int healthValue;
-    static QGraphicsTextItem* health;
-
 signals:
-    void leftClicked();
+    void spaceBarPressed(const QPointF& pos);
 
-private slots:
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
 };
 
