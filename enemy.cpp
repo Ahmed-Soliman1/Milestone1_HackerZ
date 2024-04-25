@@ -3,7 +3,7 @@
 #include <QRandomGenerator>
 #include <QtMath>
 #include <QMessageBox>
-#include "missile.h"
+
 #include "player.h"
 
 Enemy::Enemy(QGraphicsItem *parent) : QObject(), QGraphicsEllipseItem(parent)
@@ -12,12 +12,13 @@ Enemy::Enemy(QGraphicsItem *parent) : QObject(), QGraphicsEllipseItem(parent)
     setRect(0, 0, 10, 10);
     setBrush(Qt::red);
 
-    // Set up initial position and angle
-    qreal startX = QRandomGenerator::global()->bounded(200, 800); // Adjust according to your scene width
+    //randomizing the initial position the enemy is created to be bounded
+    qreal startX = QRandomGenerator::global()->bounded(200, 600); // Adjust according to your scene width
     setPos(startX, 0);
+    //randomizing the angle the enemy moves with to be bounded
     angle = QRandomGenerator::global()->bounded(-30,30);
 
-    // Set up speed and timer
+    // connecting the timer to the move function so that the enemy keeps moving
     speed = 1; // Adjust as needed
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &Enemy::move);
@@ -31,28 +32,6 @@ int Player::coins=0;
 int Player::healthValue =3;
 QGraphicsTextItem* Player::health;
 bool Player::bonus;
-
-void Enemy::explode(qreal x, qreal y)
-{
-    // Create the explosion at the given position (x, y)
-    explosion = new QGraphicsEllipseItem(x, y, 1, 1); // Initial size 1x1
-    explosion->setBrush(Qt::yellow); // Initial color
-
-    // Increase explosion size gradually
-    qreal scaleFactor = explosion->rect().width() + 0.1; // Assuming explosion is a square
-    explosion->setRect(x - scaleFactor / 2, y - scaleFactor / 2, scaleFactor, scaleFactor);
-
-    // Remove the explosion when the explosion reaches a certain size
-    if (scaleFactor > 7.0)
-    {
-        foreach (QGraphicsItem* trail, trailItems) {
-            scene()->removeItem(trail); // Remove the trail items
-            delete trail;
-        }
-        scene()->removeItem(explosion); // Remove the explosion
-        delete explosion; // Delete the explosion object
-    }
-}
 
 void Enemy::move()
 {
@@ -91,10 +70,9 @@ void Enemy::move()
         else if (typeid(*(item))==typeid(QGraphicsRectItem)) {
             Player::healthValue--;
             Player::health->setPlainText("Health: " +QString::number(Player::healthValue));
-            scene()->removeItem(item);
-            delete item;
-            scene()->removeItem(this); // Remove the enemy
-            explode(x(), y());
+
+            scene()->removeItem(this);
+
             if (Player::healthValue==0)
             {
                 QMessageBox* over =new QMessageBox;
@@ -110,11 +88,7 @@ void Enemy::move()
     }
 
 
-    // If the enemy is out of the scene, remove it along with its trail
-    if (y() > scene()->height()) {
-        scene()->removeItem(this);
-        delete this;
-    }
+
 }
 
 

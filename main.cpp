@@ -18,35 +18,32 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    srand(time(NULL));
     // Create a scene
     QGraphicsScene scene;
     scene.setSceneRect(0, 0, 800, 600); // Set scene boundaries
 
     //create base
     QPixmap pixmap(":/images/base.png");
-    // Adjust size here
     QGraphicsPixmapItem *base = new QGraphicsPixmapItem(pixmap);
     base->setPos(90, 548);
     base->setScale(1.2);
     scene.addItem(base);
 
-    // Create bases as rectangles
-    QGraphicsRectItem *base1 = new QGraphicsRectItem(122, 565, 40, 40); // Adjust size and position as needed
-    QGraphicsRectItem *base2 = new QGraphicsRectItem(370, 565, 40, 40);
-    QGraphicsRectItem *base3 = new QGraphicsRectItem(650, 565, 40, 40);
-    base1->setBrush(Qt::green); // Set color if needed
-    base2->setBrush(Qt::green);
-    base3->setBrush(Qt::green);
-    scene.addItem(base1);
-    scene.addItem(base2);
-    scene.addItem(base3);
+
+    //create rectangle aproximately the same size as the base
+    QGraphicsRectItem *rectangle = new QGraphicsRectItem(92, 560, 612, 40);
+    scene.addItem(rectangle);
+
+
 
     // Create a view and set the scene
     QGraphicsView view(&scene);
+    //change the name of the window
     view.setWindowTitle("Missile Command");
+    //disabling scroll bars
     view.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     view.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    //changing background color to black
     view.setBackgroundBrush(Qt::black);
     view.show();
 
@@ -73,6 +70,7 @@ int main(int argc, char *argv[])
     player->setScale(0.05);
     scene.addItem(player);
     player->setFlag(QGraphicsItem::ItemIsFocusable);
+    //setting focus to player to be controlled
     player->setFocus();
     player->setPos(400, 400); // Adjust player position
 
@@ -80,9 +78,7 @@ int main(int argc, char *argv[])
 
 
     // Connect Player signal to create missile and explosion
-    QObject::connect(player, &Player::spaceBarPressed, [&scene, base1, base2, base3, &player](const QPointF& pos) {
-        qDebug() << "Space bar pressed!";
-        //QPointF FireBase;
+    QObject::connect(player, &Player::spaceBarPressed, [&scene, &player](const QPointF& pos) {
         if (player->bonus){
             player->numshoots++;
             if (player->numshoots>3)
@@ -91,6 +87,7 @@ int main(int argc, char *argv[])
                 player->bonus=false;
             }
         }
+        //the start position is fixed
         Missile *missile = new Missile(390, 580, player->pos().x()+13, player->pos().y()+12, player->bonus);
         scene.addItem(missile);
 
