@@ -19,6 +19,7 @@ private:
     qreal speed;
     QTimer* timer;
     QGraphicsEllipseItem* explosion;
+    QList<QGraphicsItem*> trailItems;
 };
 
 #endif // ENEMY_H

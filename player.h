@@ -7,12 +7,17 @@
 class Player : public QObject,  public QGraphicsPixmapItem
 {Q_OBJECT
 public:
-    Player();
+
+    Player(QGraphicsTextItem* scorep=0, QGraphicsTextItem* healthp=0);
 
     void keyPressEvent(QKeyEvent * event);
     static int scoreValue;
     static QGraphicsTextItem* score;
     static int healthValue;
+    static QGraphicsTextItem* health;
+    static int coins;
+    static bool bonus;
+    int numshoots;
 signals:
     void spaceBarPressed(const QPointF& pos);
 

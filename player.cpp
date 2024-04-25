@@ -2,11 +2,12 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QCursor>
 #include <QKeyEvent>
-
 #include <QGraphicsScene>
-#include "missile.h"
 
-Player::Player() {
+Player::Player(QGraphicsTextItem* scorep,QGraphicsTextItem* healthp) {
+    this->score=scorep;
+    this->health=healthp;
+    numshoots=0;
     // Load player image and set its size
     setPixmap(QPixmap(":/images/cursor.png"));
 

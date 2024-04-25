@@ -2,7 +2,9 @@
 #include <QGraphicsScene>
 #include <QRandomGenerator>
 #include <QtMath>
-#include "missile.h""
+#include <QMessageBox>
+#include "missile.h"
+#include "player.h"
 
 Enemy::Enemy(QGraphicsItem *parent) : QObject(), QGraphicsEllipseItem(parent)
 {
@@ -22,6 +24,14 @@ Enemy::Enemy(QGraphicsItem *parent) : QObject(), QGraphicsEllipseItem(parent)
     timer->start(20); // Adjust timer interval as needed
 }
 
+int Player::scoreValue = 0;
+QGraphicsTextItem* Player::score;
+int Player::coins=0;
+
+int Player::healthValue =3;
+QGraphicsTextItem* Player::health;
+bool Player::bonus;
+
 void Enemy::explode(qreal x, qreal y)
 {
     // Create the explosion at the given position (x, y)
@@ -35,10 +45,15 @@ void Enemy::explode(qreal x, qreal y)
     // Remove the explosion when the explosion reaches a certain size
     if (scaleFactor > 7.0)
     {
+        foreach (QGraphicsItem* trail, trailItems) {
+            scene()->removeItem(trail); // Remove the trail items
+            delete trail;
+        }
         scene()->removeItem(explosion); // Remove the explosion
         delete explosion; // Delete the explosion object
     }
 }
+
 void Enemy::move()
 {
     qreal dx = speed * qSin(qDegreesToRadians(angle));
@@ -49,30 +64,57 @@ void Enemy::move()
     foreach (QGraphicsItem* item, collisions) {
         if (item->type() == QGraphicsEllipseItem::Type) {
             QGraphicsEllipseItem* ellipseItem = qgraphicsitem_cast<QGraphicsEllipseItem*>(item);
-            if (ellipseItem && ellipseItem->brush().color() == Qt::blue) {
+            if ((ellipseItem && ellipseItem->brush().color() == Qt::blue)||(ellipseItem && ellipseItem->brush().color() == Qt::yellow)) {
+
+                Player::scoreValue++;
+                Player::score->setPlainText("Score: " +QString::number(Player::scoreValue));
                 //scene()->removeItem(ellipseItem); // Remove the blue ellipse
                 scene()->removeItem(this); // Remove the enemy
-                delete this;
-                return;
-            }
-        }
-        else if(item->type()== QGraphicsRectItem::Type){
-            QGraphicsRectItem* rectItem = qgraphicsitem_cast<QGraphicsRectItem*>(item);
-            if (rectItem){
-                scene()->removeItem(this); // Remove the enemy
-                explode(x(), y());
+                if (Player::scoreValue % 5 == 0) {
+                    Player::coins += 100;
+                    QMessageBox weapon;
+                    weapon.setWindowTitle("Buy Weapon");
+                    weapon.setText("Your coins are now: " + QString::number(Player::coins) + ". Do you want to use 100 coins to buy a weapon?");
+                    weapon.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+                    weapon.setDefaultButton(QMessageBox::No);
+                    if (weapon.exec() == QMessageBox::Yes) {
+                        Player::coins -= 100;
+                        Player::bonus=true;
+                    }
+                }
+
                 delete this;
                 return;
             }
         }
 
+        else if (typeid(*(item))==typeid(QGraphicsRectItem)) {
+            Player::healthValue--;
+            Player::health->setPlainText("Health: " +QString::number(Player::healthValue));
+            scene()->removeItem(item);
+            delete item;
+            scene()->removeItem(this); // Remove the enemy
+            explode(x(), y());
+            if (Player::healthValue==0)
+            {
+                QMessageBox* over =new QMessageBox;
+                over->setText("Game over, your score is: " +QString::number(Player::scoreValue));
+                over->exec();
+
+                exit(0);
+            }
+
+            delete this;
+            return;
+        }
     }
 
 
-
-    // If the enemy is out of the scene, remove it
+    // If the enemy is out of the scene, remove it along with its trail
     if (y() > scene()->height()) {
         scene()->removeItem(this);
         delete this;
     }
 }
+
+

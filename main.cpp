@@ -31,61 +31,16 @@ int main(int argc, char *argv[])
     base->setScale(1.2);
     scene.addItem(base);
 
-    //base rectangle
-    QGraphicsRectItem *rectangle = new QGraphicsRectItem(92, 560, 612, 40); // Change dimensions as needed
-    QPen pen(Qt::green);
-    //rectangle->setPen(pen);
-    scene.addItem(rectangle);
-
     // Create bases as rectangles
-    QGraphicsRectItem *base1 = new QGraphicsRectItem(132, 570, 20, 20); // Adjust size and position as needed
-    QGraphicsRectItem *base2 = new QGraphicsRectItem(380, 570, 20, 20);
-    QGraphicsRectItem *base3 = new QGraphicsRectItem(660, 570, 20, 20);
+    QGraphicsRectItem *base1 = new QGraphicsRectItem(122, 565, 40, 40); // Adjust size and position as needed
+    QGraphicsRectItem *base2 = new QGraphicsRectItem(370, 565, 40, 40);
+    QGraphicsRectItem *base3 = new QGraphicsRectItem(650, 565, 40, 40);
     base1->setBrush(Qt::green); // Set color if needed
     base2->setBrush(Qt::green);
     base3->setBrush(Qt::green);
     scene.addItem(base1);
     scene.addItem(base2);
     scene.addItem(base3);
-
-    // Create the Player
-    Player *player = new Player();
-    player->setPixmap(QPixmap(":/images/cursor.png"));
-    player->setScale(0.05);
-    scene.addItem(player);
-    player->setFlag(QGraphicsItem::ItemIsFocusable);
-    player->setFocus();
-    player->setPos(400, 400); // Adjust player position
-
-
-
-
-    // Connect Player signal to create missile and explosion
-    QObject::connect(player, &Player::spaceBarPressed, [&scene, base1, base2, base3, &player](const QPointF& pos) {
-        qDebug() << "Space bar pressed!";
-        //QPointF FireBase;
-        srand(time(NULL));
-        int randomValue = rand() % 3 + 1;
-
-        if (randomValue==1){
-            Missile *missile = new Missile(390, 580, player->pos().x()+13, player->pos().y()+12);
-            scene.addItem(missile);
-        }
-        else if (randomValue==2){
-            Missile *missile = new Missile(390, 580, player->pos().x()+13, player->pos().y()+12);
-            scene.addItem(missile);
-        }
-        else{
-            Missile *missile = new Missile(390, 580, player->pos().x()+13, player->pos().y()+12);
-            scene.addItem(missile);
-        }
-
-
-    });
-
-
-
-
 
     // Create a view and set the scene
     QGraphicsView view(&scene);
@@ -94,14 +49,6 @@ int main(int argc, char *argv[])
     view.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     view.setBackgroundBrush(Qt::black);
     view.show();
-
-    // Create a timer for creating enemies
-    QTimer timer;
-    QObject::connect(&timer, &QTimer::timeout, [&scene]() {
-        Enemy *enemy = new Enemy();
-        scene.addItem(enemy);
-    });
-    timer.start(2000); // Create enemies every 2 seconds
 
     // Displaying the score
     QGraphicsTextItem* score = new QGraphicsTextItem;
@@ -118,6 +65,46 @@ int main(int argc, char *argv[])
     health->setDefaultTextColor(Qt::blue);
     health->setPos(view.width()-150, 60);
     scene.addItem(health);
+
+
+    // Create the Player
+    Player *player = new Player(score,health);
+    player->setPixmap(QPixmap(":/images/cursor.png"));
+    player->setScale(0.05);
+    scene.addItem(player);
+    player->setFlag(QGraphicsItem::ItemIsFocusable);
+    player->setFocus();
+    player->setPos(400, 400); // Adjust player position
+
+
+
+
+    // Connect Player signal to create missile and explosion
+    QObject::connect(player, &Player::spaceBarPressed, [&scene, base1, base2, base3, &player](const QPointF& pos) {
+        qDebug() << "Space bar pressed!";
+        //QPointF FireBase;
+        if (player->bonus){
+            player->numshoots++;
+            if (player->numshoots>3)
+            {
+                player->numshoots=0;
+                player->bonus=false;
+            }
+        }
+        Missile *missile = new Missile(390, 580, player->pos().x()+13, player->pos().y()+12, player->bonus);
+        scene.addItem(missile);
+
+    });
+
+
+
+    // Create a timer for creating enemies
+    QTimer timer;
+    QObject::connect(&timer, &QTimer::timeout, [&scene]() {
+        Enemy *enemy = new Enemy();
+        scene.addItem(enemy);
+    });
+    timer.start(2000); // Create enemies every 2 seconds
 
 
 

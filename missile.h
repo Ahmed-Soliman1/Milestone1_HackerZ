@@ -11,7 +11,8 @@ class Missile : public QObject, public QGraphicsItemGroup
 {
     Q_OBJECT
 public:
-    Missile(int startX, int startY, int endX, int endY, QGraphicsItem *parent = nullptr);
+    Missile(int startX, int startY, int endX, int endY, bool bon, QGraphicsItem *parent = nullptr);
+    bool bonus;
 
 public slots:
     void explode();
