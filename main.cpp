@@ -31,6 +31,12 @@ int main(int argc, char *argv[])
     base->setScale(1.2);
     scene.addItem(base);
 
+    //base rectangle
+    QGraphicsRectItem *rectangle = new QGraphicsRectItem(92, 560, 612, 40); // Change dimensions as needed
+    QPen pen(Qt::green);
+    //rectangle->setPen(pen);
+    scene.addItem(rectangle);
+
     // Create bases as rectangles
     QGraphicsRectItem *base1 = new QGraphicsRectItem(132, 570, 20, 20); // Adjust size and position as needed
     QGraphicsRectItem *base2 = new QGraphicsRectItem(380, 570, 20, 20);
@@ -51,8 +57,7 @@ int main(int argc, char *argv[])
     player->setFocus();
     player->setPos(400, 400); // Adjust player position
 
-    // Define a pointer to the Missile object
-    //Missile* missile = nullptr;
+
 
 
     // Connect Player signal to create missile and explosion
@@ -75,12 +80,7 @@ int main(int argc, char *argv[])
             scene.addItem(missile);
         }
 
-        // Calculate the position of the missile relative to the closest base
-        //QPointF missileStartPos(FireBase.x() + 10, FireBase.y() - 10); // Adjust the offset as needed
 
-        // Create a missile
-        //Missile *missile = new Missile(380, 570, player->pos().x(), player->pos().y());
-        //scene.addItem(missile);
     });
 
 
@@ -92,6 +92,7 @@ int main(int argc, char *argv[])
     view.setWindowTitle("Missile Command");
     view.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     view.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    view.setBackgroundBrush(Qt::black);
     view.show();
 
     // Create a timer for creating enemies
@@ -119,7 +120,7 @@ int main(int argc, char *argv[])
     scene.addItem(health);
 
 
-    view.setBackgroundBrush(Qt::black);
+
 
     return a.exec();
 }

@@ -4,24 +4,21 @@
 #include <QObject>
 #include <QGraphicsEllipseItem>
 #include <QTimer>
-#include <QPainterPath>
-#include <QPen>
-#include <QList>
-#include "missile.h"
 
 class Enemy : public QObject, public QGraphicsEllipseItem
 {
     Q_OBJECT
-public:
-    Enemy(QGraphicsItem *parent = nullptr);
 
-public slots:
+public:
+    Enemy(QGraphicsItem* parent = nullptr);
     void move();
+    void explode(qreal x, qreal y);
 
 private:
-    QTimer *timer;
     qreal angle;
     qreal speed;
+    QTimer* timer;
+    QGraphicsEllipseItem* explosion;
 };
 
 #endif // ENEMY_H

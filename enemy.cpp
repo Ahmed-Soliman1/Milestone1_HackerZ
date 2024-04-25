@@ -22,6 +22,23 @@ Enemy::Enemy(QGraphicsItem *parent) : QObject(), QGraphicsEllipseItem(parent)
     timer->start(20); // Adjust timer interval as needed
 }
 
+void Enemy::explode(qreal x, qreal y)
+{
+    // Create the explosion at the given position (x, y)
+    explosion = new QGraphicsEllipseItem(x, y, 1, 1); // Initial size 1x1
+    explosion->setBrush(Qt::yellow); // Initial color
+
+    // Increase explosion size gradually
+    qreal scaleFactor = explosion->rect().width() + 0.1; // Assuming explosion is a square
+    explosion->setRect(x - scaleFactor / 2, y - scaleFactor / 2, scaleFactor, scaleFactor);
+
+    // Remove the explosion when the explosion reaches a certain size
+    if (scaleFactor > 7.0)
+    {
+        scene()->removeItem(explosion); // Remove the explosion
+        delete explosion; // Delete the explosion object
+    }
+}
 void Enemy::move()
 {
     qreal dx = speed * qSin(qDegreesToRadians(angle));
@@ -33,8 +50,17 @@ void Enemy::move()
         if (item->type() == QGraphicsEllipseItem::Type) {
             QGraphicsEllipseItem* ellipseItem = qgraphicsitem_cast<QGraphicsEllipseItem*>(item);
             if (ellipseItem && ellipseItem->brush().color() == Qt::blue) {
-                scene()->removeItem(ellipseItem); // Remove the blue ellipse
+                //scene()->removeItem(ellipseItem); // Remove the blue ellipse
                 scene()->removeItem(this); // Remove the enemy
+                delete this;
+                return;
+            }
+        }
+        else if(item->type()== QGraphicsRectItem::Type){
+            QGraphicsRectItem* rectItem = qgraphicsitem_cast<QGraphicsRectItem*>(item);
+            if (rectItem){
+                scene()->removeItem(this); // Remove the enemy
+                explode(x(), y());
                 delete this;
                 return;
             }
@@ -43,16 +69,6 @@ void Enemy::move()
     }
 
 
-    // Draw a red line as a trail
-    if (scene()) {
-        QPen pen(Qt::red, 2);
-        pen.setCapStyle(Qt::RoundCap);
-        pen.setJoinStyle(Qt::RoundJoin);
-        QPainterPath path;
-        path.moveTo(x() + 5, y() + 5); // Center of the ellipse
-        path.lineTo(x() + dx + 5, y() + dy + 5); // New position
-        scene()->addPath(path, pen);
-    }
 
     // If the enemy is out of the scene, remove it
     if (y() > scene()->height()) {
