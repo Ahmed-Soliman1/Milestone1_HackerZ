@@ -9,11 +9,11 @@
 #include "enemy.h"
 #include "missile.h"
 #include <QPushButton>
+#include <QTimer>>
 
-<<<<<<< HEAD
+\
 
 
-=======
 QTimer* timer = nullptr;
 
 void createTimerForEnemies(QGraphicsScene &scene, Player *player) {
@@ -22,7 +22,8 @@ void createTimerForEnemies(QGraphicsScene &scene, Player *player) {
         timer->stop();
         delete timer;
     }
->>>>>>> 93dda9e4e37e905fc7e8fb1184597244af23bd4f
+
+
 
     // Create a new timer with the updated interval
     timer = new QTimer();
@@ -77,7 +78,7 @@ int main(int argc, char *argv[])
     scene.addItem(health);
 
     // Displaying the level
-//    int level = 1;
+    //    int level = 1;
     QGraphicsTextItem* levelLabel = new QGraphicsTextItem;
     levelLabel->setFont(QFont("times", 16));
     levelLabel->setPlainText("Level: " + QString::number(1));
@@ -122,7 +123,7 @@ int main(int argc, char *argv[])
             Missile* missile = new Missile(x, 580, player->pos().x() + 13, player->pos().y() + 12, player->bonus, player->level);
             scene.addItem(missile);
         });
-/*
+        /*
         // A timer for creating enemies
         QTimer* timer = new QTimer();
         QObject::connect(timer, &QTimer::timeout, [&scene, &player]() {
@@ -135,7 +136,9 @@ int main(int argc, char *argv[])
         QTimer* levelCheckTimer = new QTimer();
         QObject::connect(levelCheckTimer, &QTimer::timeout, [&scene, &level, &player]() {
             if (Player::level != level) {
+
                 level = Player::level;
+
                 createTimerForEnemies(scene, player);
             }
         });
@@ -144,3 +147,24 @@ int main(int argc, char *argv[])
 
     return a.exec();
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

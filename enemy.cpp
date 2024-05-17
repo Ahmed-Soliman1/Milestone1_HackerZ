@@ -41,7 +41,22 @@ void Enemy::move()
 {
     qreal dx = speed * qSin(qDegreesToRadians(angle));
     qreal dy = speed * qCos(qDegreesToRadians(angle));
-    setPos(x() + dx, y() + dy);
+    qreal new_x = x() + dx;
+    qreal new_y = y() + dy;
+
+    // Check if the new position is out of bounds on the sides
+    if (new_x < 0) {
+        // Enemy is going out of the left side, adjust its position and angle
+        new_x = 0;
+        angle = -angle; // Reflect the angle to simulate bounce
+    } else if (new_x > scene()->width() - rect().width()) {
+        // Enemy is going out of the right side, adjust its position and angle
+        new_x = scene()->width() - rect().width();
+        angle = -angle; // Reflect the angle to simulate bounce
+    }
+
+    // Update the position
+    setPos(new_x, new_y);
 
     QList<QGraphicsItem*> collisions = collidingItems(Qt::IntersectsItemShape);
     foreach (QGraphicsItem* item, collisions) {
