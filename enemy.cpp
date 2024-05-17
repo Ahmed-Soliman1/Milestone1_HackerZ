@@ -5,8 +5,9 @@
 #include <QMessageBox>
 
 #include "player.h"
+#include <QPushButton>
 
-Enemy::Enemy(QGraphicsItem *parent) : QObject(), QGraphicsEllipseItem(parent)
+Enemy::Enemy(int level, QGraphicsItem *parent) : QObject(), QGraphicsEllipseItem(parent)
 {
     // Set up the ellipse
     setRect(0, 0, 10, 10);
@@ -22,7 +23,7 @@ Enemy::Enemy(QGraphicsItem *parent) : QObject(), QGraphicsEllipseItem(parent)
     speed = 1; // Adjust as needed
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &Enemy::move);
-    timer->start(20); // Adjust timer interval as needed
+    timer->start(40-5*level); // Adjust timer interval as needed
 }
 
 int Player::scoreValue = 0;
@@ -32,6 +33,9 @@ int Player::coins=0;
 int Player::healthValue =3;
 QGraphicsTextItem* Player::health;
 bool Player::bonus;
+
+int Player::level = 1;
+QGraphicsTextItem* Player::levelLabel;
 
 void Enemy::move()
 {
@@ -49,13 +53,38 @@ void Enemy::move()
                 Player::score->setPlainText("Score: " +QString::number(Player::scoreValue));
                 //scene()->removeItem(ellipseItem); // Remove the blue ellipse
                 scene()->removeItem(this); // Remove the enemy
-                if (Player::scoreValue % 5 == 0) {
+                if (Player::scoreValue==/*10+*/5*Player::level)
+                {
+                    if (Player::level < 5) {
+                        QMessageBox win;
+                        win.setWindowTitle("You won");
+                        win.setText("You finished level " + QString::number(Player::level) + ". You can now proceed to the next level.");
+                        QPushButton* newbut = win.addButton("Go to next level", QMessageBox::AcceptRole);
+                        win.exec();
+
+                        if (win.clickedButton() == newbut) {
+                            Player::level++;
+                            Player::levelLabel->setPlainText("Level: " + QString::number(Player::level));
+                            Player::scoreValue = 0;
+                            Player::healthValue = 3;
+                            Player::score->setPlainText("Score: " + QString::number(0));
+                            Player::health->setPlainText("Health: " + QString::number(3));
+                        }
+                    } else {
+                        QMessageBox congrat;
+                        congrat.setWindowTitle("Well Done");
+                        congrat.setText("Congratulations! You finished all the levels!");
+                        congrat.exec();
+                        exit(0);
+                    }
+                }
+                else if (Player::scoreValue % 5 == 0) {
                     Player::coins += 100;
                     QMessageBox weapon;
                     weapon.setWindowTitle("Buy Weapon");
                     weapon.setText("Your coins are now: " + QString::number(Player::coins) + ". Do you want to use 100 coins to buy a weapon?");
                     weapon.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-                    weapon.setDefaultButton(QMessageBox::No);
+                    weapon.setDefaultButton(QMessageBox::Yes);
                     if (weapon.exec() == QMessageBox::Yes) {
                         Player::coins -= 100;
                         Player::bonus=true;
@@ -90,5 +119,3 @@ void Enemy::move()
 
 
 }
-
-

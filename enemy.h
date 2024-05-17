@@ -11,7 +11,7 @@ class Enemy : public QObject, public QGraphicsEllipseItem
     Q_OBJECT
 
 public:
-    Enemy(QGraphicsItem* parent = nullptr);
+    Enemy(int level, QGraphicsItem* parent = nullptr);
     void move();
 
 
@@ -21,6 +21,7 @@ private:
     QTimer* timer;
     QGraphicsEllipseItem* explosion;
     QList<QGraphicsItem*> trailItems;
+
 };
 
 #endif // ENEMY_H
