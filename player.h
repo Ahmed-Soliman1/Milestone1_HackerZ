@@ -22,7 +22,7 @@ public:
     int numshoots;
 signals:
     void spaceBarPressed(const QPointF& pos);
-    //static void levelChanged();
+
 
 };
 

@@ -3,7 +3,6 @@
 #include <QRandomGenerator>
 #include <QtMath>
 #include <QMessageBox>
-
 #include "player.h"
 #include <QPushButton>
 
@@ -44,30 +43,30 @@ void Enemy::move()
     qreal new_x = x() + dx;
     qreal new_y = y() + dy;
 
-    // Check if the new position is out of bounds on the sides
+    //check if the enemy's new position is out of bounds on the sides
     if (new_x < 0) {
-        // Enemy is going out of the left side, adjust its position and angle
+        //checks if the enemy is going out of the left side
         new_x = 0;
-        angle = -angle; // Reflect the angle to simulate bounce
+        //changing the angle to negative to stimulate bounce
+        angle = -angle;
     } else if (new_x > scene()->width() - rect().width()) {
-        // Enemy is going out of the right side, adjust its position and angle
+        //checks if the enemy is going out of the right side
         new_x = scene()->width() - rect().width();
-        angle = -angle; // Reflect the angle to simulate bounce
+        angle = -angle; //changing the angle to negative to stimulate bounce
     }
 
     // Update the position
     setPos(new_x, new_y);
-
+    //Handling the collisions of enemy
     QList<QGraphicsItem*> collisions = collidingItems(Qt::IntersectsItemShape);
     foreach (QGraphicsItem* item, collisions) {
         if (item->type() == QGraphicsEllipseItem::Type) {
-            QGraphicsEllipseItem* ellipseItem = qgraphicsitem_cast<QGraphicsEllipseItem*>(item);
+            QGraphicsEllipseItem* ellipseItem = qgraphicsitem_cast<QGraphicsEllipseItem*>(item);//handeling if the enemy collides with ellipse(the explosion of the missile)
             if ((ellipseItem && ellipseItem->brush().color() == Qt::blue)||(ellipseItem && ellipseItem->brush().color() == Qt::yellow)) {
 
                 Player::scoreValue++;
                 Player::score->setPlainText("Score: " +QString::number(Player::scoreValue));
-                //scene()->removeItem(ellipseItem); // Remove the blue ellipse
-                scene()->removeItem(this); // Remove the enemy
+                scene()->removeItem(this); //if it collides it is removed from the scene
                 if (Player::scoreValue==/*10+*/5*Player::level)
                 {
                     if (Player::level < 5) {

@@ -4,21 +4,23 @@
 #include <QKeyEvent>
 #include <QGraphicsScene>
 
+
 Player::Player(QGraphicsTextItem* scorep,QGraphicsTextItem* healthp, QGraphicsTextItem* levelp) {
     this->score=scorep;
     this->health=healthp;
     this->levelLabel=levelp;
     numshoots=0;
-    // Load player image and set its size
-    setPixmap(QPixmap(":/images/cursor.png"));
 
+
+    //loading player image and scaling its size
+    setPixmap(QPixmap(":/images/cursor.png"));
     setScale(0.5);
 
 }
 
 void Player::keyPressEvent(QKeyEvent *event)
 {
-    // *******  Event Handling for the Player ********
+    // *******  Event Handling for the Player that checks if it is in boundries ********
     if(event->key()== Qt::Key_Left)
     {
         if(x()>4.8)
@@ -40,10 +42,8 @@ void Player::keyPressEvent(QKeyEvent *event)
     }
     else if(event->key()== Qt::Key_Space)
     {
-        // Get the scene position of the player
+        //getting the scene position to where the space bar was clicked to be sent as a parameter in the signal Spacebar pressed
         QPointF scenePos = mapToScene(0, 0);
-
-        // Calculate the scene position of the player manually
         QPointF spaceBarPos(scenePos.x() + pos().x(), scenePos.y() + pos().y());
 
         emit spaceBarPressed(spaceBarPos);
