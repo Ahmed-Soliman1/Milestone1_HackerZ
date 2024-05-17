@@ -1,4 +1,4 @@
-#include "player.h"
+ #include "player.h"
 #include <QGraphicsSceneMouseEvent>
 #include <QCursor>
 #include <QKeyEvent>

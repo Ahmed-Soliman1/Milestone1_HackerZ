@@ -37,7 +37,7 @@ void Missile::move()
     QPointF explosionPos = explosion->pos();
     QPointF direction = explosionPos - lineEndPoint;
     qreal distance = QLineF(lineEndPoint, explosionPos).length();
-    qreal step = 5.0;
+    qreal step = 10;
     if (distance > step) {
         direction *= step / distance;
         lineEndPoint += direction;

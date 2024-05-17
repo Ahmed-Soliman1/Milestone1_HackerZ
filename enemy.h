@@ -13,10 +13,9 @@ class Enemy : public QObject, public QGraphicsEllipseItem
 public:
     Enemy(QGraphicsItem* parent = nullptr);
     void move();
-    //void explode(qreal x, qreal y);
+
 
 private:
-    //creating private data members to for the enemy
     qreal angle;
     qreal speed;
     QTimer* timer;
