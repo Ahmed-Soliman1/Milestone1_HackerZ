@@ -19,7 +19,7 @@ public:
     static bool bonus;
     static int level;
     static QGraphicsTextItem* levelLabel;
-    int numshoots;
+    static int numshoots;
 signals:
     void spaceBarPressed(const QPointF& pos);
 

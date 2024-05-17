@@ -32,6 +32,7 @@ int Player::coins=0;
 int Player::healthValue =3;
 QGraphicsTextItem* Player::health;
 bool Player::bonus;
+int Player::numshoots = 0;
 
 int Player::level = 1;
 QGraphicsTextItem* Player::levelLabel;
@@ -73,10 +74,12 @@ void Enemy::move()
                         QMessageBox win;
                         win.setWindowTitle("You won");
                         win.setText("You finished level " + QString::number(Player::level) + ". You can now proceed to the next level.");
-                        QPushButton* newbut = win.addButton("Go to next level", QMessageBox::AcceptRole);
+                        QPushButton* next = win.addButton("Go to next level", QMessageBox::AcceptRole);
+                        QPushButton* quit = win.addButton("Quit", QMessageBox::AcceptRole);
+                        win.setDefaultButton(next);
                         win.exec();
 
-                        if (win.clickedButton() == newbut) {
+                        if (win.clickedButton() == next) {  //proceeding to next level
                             Player::level++;
                             Player::levelLabel->setPlainText("Level: " + QString::number(Player::level));
                             Player::scoreValue = 0;
@@ -84,7 +87,10 @@ void Enemy::move()
                             Player::score->setPlainText("Score: " + QString::number(0));
                             Player::health->setPlainText("Health: " + QString::number(3));
                         }
-                    } else {
+                        else if (win.clickedButton() == quit)
+                            exit(0);
+                    }
+                    else {  // In case of finishing all levels
                         QMessageBox congrat;
                         congrat.setWindowTitle("Well Done");
                         congrat.setText("Congratulations! You finished all the levels!");
@@ -92,15 +98,16 @@ void Enemy::move()
                         exit(0);
                     }
                 }
-                else if (Player::scoreValue % 5 == 0) {
+                else if (Player::scoreValue % 5 == 0) { // enabling bonus weapon
                     Player::coins += 100;
                     QMessageBox weapon;
                     weapon.setWindowTitle("Buy Weapon");
                     weapon.setText("Your coins are now: " + QString::number(Player::coins) + ". Do you want to use 100 coins to buy a weapon?");
                     weapon.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-                    weapon.setDefaultButton(QMessageBox::Yes);
+                    weapon.setDefaultButton(QMessageBox::Yes);                   
                     if (weapon.exec() == QMessageBox::Yes) {
-                        Player::coins -= 100;
+                        Player::numshoots += 3* Player::coins/100;   // adding the number of bonus shoots he'll get
+                        Player::coins = 0;
                         Player::bonus=true;
                     }
                 }
@@ -110,7 +117,7 @@ void Enemy::move()
             }
         }
 
-        else if (typeid(*(item))==typeid(QGraphicsRectItem)) {
+        else if (typeid(*(item))==typeid(QGraphicsRectItem)) {  // collision with base
             Player::healthValue--;
             Player::health->setPlainText("Health: " +QString::number(Player::healthValue));
 
