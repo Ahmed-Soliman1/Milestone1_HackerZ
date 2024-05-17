@@ -8,7 +8,7 @@ class Player : public QObject,  public QGraphicsPixmapItem
 {Q_OBJECT
 public:
 
-    Player(QGraphicsTextItem* scorep=0, QGraphicsTextItem* healthp=0);
+    Player(QGraphicsTextItem* scorep=0, QGraphicsTextItem* healthp=0, QGraphicsTextItem* levelp=0);
 
     void keyPressEvent(QKeyEvent * event);
     static int scoreValue;
@@ -17,10 +17,12 @@ public:
     static QGraphicsTextItem* health;
     static int coins;
     static bool bonus;
+    static int level;
+    static QGraphicsTextItem* levelLabel;
     int numshoots;
 signals:
     void spaceBarPressed(const QPointF& pos);
-
+    //static void levelChanged();
 
 };
 

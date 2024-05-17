@@ -4,9 +4,10 @@
 #include <QKeyEvent>
 #include <QGraphicsScene>
 
-Player::Player(QGraphicsTextItem* scorep,QGraphicsTextItem* healthp) {
+Player::Player(QGraphicsTextItem* scorep,QGraphicsTextItem* healthp, QGraphicsTextItem* levelp) {
     this->score=scorep;
     this->health=healthp;
+    this->levelLabel=levelp;
     numshoots=0;
     // Load player image and set its size
     setPixmap(QPixmap(":/images/cursor.png"));

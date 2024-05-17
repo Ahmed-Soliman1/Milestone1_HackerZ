@@ -3,7 +3,7 @@
 #include <QPen>
 #include <QBrush>
 
-Missile::Missile(int startX, int startY, int endX, int endY, bool bon, QGraphicsItem *parent)
+Missile::Missile(int startX, int startY, int endX, int endY, bool bon, int level, QGraphicsItem *parent)
     : QObject(), QGraphicsItemGroup(parent)
 {
     bonus =bon;
@@ -14,7 +14,7 @@ Missile::Missile(int startX, int startY, int endX, int endY, bool bon, QGraphics
 
     // Connect timer to move slot
     connect(&timer, &QTimer::timeout, this, &Missile::move);
-    timer.start(20); // Adjust timer interval as needed
+    timer.start(10+10*(5-level)); // Adjust timer interval as needed
 
     // Set up explosion
     explosion = new QGraphicsEllipseItem(-5, -5, 10, 10, this);

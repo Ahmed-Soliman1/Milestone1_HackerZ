@@ -2,109 +2,140 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QVector2D>
-#include <QDebug> // Add this for qDebug
-
+#include <QDebug>
+#include <QMessageBox>
 #include <QTimer>
 #include "player.h"
 #include "enemy.h"
 #include "missile.h"
+#include <QPushButton>
 
-#include <cstdlib>
-#include <ctime>
+QTimer* timer = nullptr;
 
-// Inside your main() function or at the beginning of your program
+void createTimerForEnemies(QGraphicsScene &scene, Player *player) {
+    // Delete the old timer if it exists
+    if (timer != nullptr) {
+        timer->stop();
+        delete timer;
+    }
 
+    // Create a new timer with the updated interval
+    timer = new QTimer();
+    QObject::connect(timer, &QTimer::timeout, [&scene, &player]() {
+        Enemy* enemy = new Enemy(player->level);
+        scene.addItem(enemy);
+    });
+    timer->start(4500 - 500 * player->level); // Creates enemies at an interval
+}
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
     // Create a scene
     QGraphicsScene scene;
     scene.setSceneRect(0, 0, 800, 600); // Set scene boundaries
 
-    //create base
+    // Create base
     QPixmap pixmap(":/images/base.png");
     QGraphicsPixmapItem *base = new QGraphicsPixmapItem(pixmap);
     base->setPos(90, 548);
     base->setScale(1.2);
     scene.addItem(base);
 
-
-    //create rectangle aproximately the same size as the base
+    // Create rectangle approximately the same size as the base
     QGraphicsRectItem *rectangle = new QGraphicsRectItem(92, 560, 612, 40);
     scene.addItem(rectangle);
 
-
-
-    // Create a view and set the scene
+    // Creating a view and set the scene
     QGraphicsView view(&scene);
-    //change the name of the window
     view.setWindowTitle("Missile Command");
-    //disabling scroll bars
     view.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     view.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    //changing background color to black
     view.setBackgroundBrush(Qt::black);
     view.show();
 
     // Displaying the score
     QGraphicsTextItem* score = new QGraphicsTextItem;
-    score->setFont(QFont("times",16));
-    score->setPlainText("Score: " +QString::number(0));
+    score->setFont(QFont("times", 16));
+    score->setPlainText("Score: " + QString::number(0));
     score->setDefaultTextColor(Qt::blue);
-    score->setPos(view.width()-150, 10);
+    score->setPos(view.width() - 150, 10);
     scene.addItem(score);
 
     // Displaying the health
     QGraphicsTextItem* health = new QGraphicsTextItem;
-    health->setFont(QFont("times",16));
-    health->setPlainText("Health: " +QString::number(3));
+    health->setFont(QFont("times", 16));
+    health->setPlainText("Health: " + QString::number(3));
     health->setDefaultTextColor(Qt::blue);
-    health->setPos(view.width()-150, 60);
+    health->setPos(view.width() - 150, 60);
     scene.addItem(health);
 
+    // Displaying the level
+//    int level = 1;
+    QGraphicsTextItem* levelLabel = new QGraphicsTextItem;
+    levelLabel->setFont(QFont("times", 16));
+    levelLabel->setPlainText("Level: " + QString::number(1));
+    levelLabel->setDefaultTextColor(Qt::blue);
+    levelLabel->setPos(view.width() - 150, 110);
+    scene.addItem(levelLabel);
 
-    // Create the Player
-    Player *player = new Player(score,health);
-    player->setPixmap(QPixmap(":/images/cursor.png"));
-    player->setScale(0.05);
-    scene.addItem(player);
-    player->setFlag(QGraphicsItem::ItemIsFocusable);
-    //setting focus to player to be controlled
-    player->setFocus();
-    player->setPos(400, 400); // Adjust player position
+    QMessageBox proceed;
+    proceed.setWindowTitle("Play");
+    proceed.setText("Do you want to start the game?");
+    QPushButton* customButton = proceed.addButton("Start", QMessageBox::AcceptRole);
+    proceed.exec();
 
+    if (proceed.clickedButton() == customButton) {
+        // Creating the Player
+        Player* player = new Player(score, health, levelLabel);
+        player->setPixmap(QPixmap(":/images/cursor.png"));
+        player->setScale(0.05);
+        scene.addItem(player);
+        player->setFlag(QGraphicsItem::ItemIsFocusable);
+        // Setting focus to player to be controlled
+        player->setFocus();
+        player->setPos(400, 400); // Adjust player position
+        int level=1;
 
-
-
-    // Connect Player signal to create missile and explosion
-    QObject::connect(player, &Player::spaceBarPressed, [&scene, &player](const QPointF& pos) {
-        if (player->bonus){
-            player->numshoots++;
-            if (player->numshoots>3)
-            {
-                player->numshoots=0;
-                player->bonus=false;
+        // Connect Player signal to create missile and explosion
+        QObject::connect(player, &Player::spaceBarPressed, [&scene, player]() {
+            if (player->bonus) {
+                player->numshoots++;
+                if (player->numshoots > 3) {
+                    player->numshoots = 0;
+                    player->bonus = false;
+                }
             }
-        }
-        //the start position is fixed
-        Missile *missile = new Missile(390, 580, player->pos().x()+13, player->pos().y()+12, player->bonus);
-        scene.addItem(missile);
+            int x;
+            if (player->pos().x() < 267)
+                x = 133;
+            else if (player->pos().x() > 533)
+                x = 667;
+            else
+                x = 390;
+            Missile* missile = new Missile(x, 580, player->pos().x() + 13, player->pos().y() + 12, player->bonus, player->level);
+            scene.addItem(missile);
+        });
+/*
+        // A timer for creating enemies
+        QTimer* timer = new QTimer();
+        QObject::connect(timer, &QTimer::timeout, [&scene, &player]() {
+            Enemy* enemy = new Enemy(player->level);
+            scene.addItem(enemy);
+        });
+        timer->start(4500 - 0.5 * player->level); // Creates enemies at an interval*/
 
-    });
-
-
-
-    // Create a timer for creating enemies
-    QTimer timer;
-    QObject::connect(&timer, &QTimer::timeout, [&scene]() {
-        Enemy *enemy = new Enemy();
-        scene.addItem(enemy);
-    });
-    timer.start(2000); // Create enemies every 2 seconds
-
-
-
+        createTimerForEnemies(scene, player);
+        QTimer* levelCheckTimer = new QTimer();
+        QObject::connect(levelCheckTimer, &QTimer::timeout, [&scene, &level, &player]() {
+            if (Player::level != level) {
+                level = Player::level;
+                createTimerForEnemies(scene, player);
+            }
+        });
+        levelCheckTimer->start(2000); // Check for level change every 2 seconds
+    }
 
     return a.exec();
 }
