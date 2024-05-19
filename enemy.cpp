@@ -79,9 +79,9 @@ void Enemy::move()
                         if (win.clickedButton() == newbut) {
                             Player::level++;
                             Player::levelLabel->setPlainText("Level: " + QString::number(Player::level));
-                            Player::scoreValue = 0;
+                            //Player::scoreValue = 0;
                             Player::healthValue = 3;
-                            Player::score->setPlainText("Score: " + QString::number(0));
+                            Player::score->setPlainText("Score: " + QString::number(Player::scoreValue));
                             Player::health->setPlainText("Health: " + QString::number(3));
                         }
                     } else {

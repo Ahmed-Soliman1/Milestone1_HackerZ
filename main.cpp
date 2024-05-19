@@ -9,7 +9,7 @@
 #include "enemy.h"
 #include "missile.h"
 #include <QPushButton>
-#include <QTimer>>
+#include <QTimer>
 
 \
 
@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
     base->setScale(1.2);
     scene.addItem(base);
 
-    // Create rectangle approximately the same size as the base
+    //create rectangle approximately the same size as the base
     QGraphicsRectItem *rectangle = new QGraphicsRectItem(92, 560, 612, 40);
     scene.addItem(rectangle);
 
@@ -123,14 +123,6 @@ int main(int argc, char *argv[])
             Missile* missile = new Missile(x, 580, player->pos().x() + 13, player->pos().y() + 12, player->bonus, player->level);
             scene.addItem(missile);
         });
-        /*
-        // A timer for creating enemies
-        QTimer* timer = new QTimer();
-        QObject::connect(timer, &QTimer::timeout, [&scene, &player]() {
-            Enemy* enemy = new Enemy(player->level);
-            scene.addItem(enemy);
-        });
-        timer->start(4500 - 0.5 * player->level); // Creates enemies at an interval*/
 
         createTimerForEnemies(scene, player);
         QTimer* levelCheckTimer = new QTimer();
