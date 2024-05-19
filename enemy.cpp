@@ -68,7 +68,19 @@ void Enemy::move()
                 Player::scoreValue++;
                 Player::score->setPlainText("Score: " +QString::number(Player::scoreValue));
                 scene()->removeItem(this); //if it collides it is removed from the scene
-                if (Player::scoreValue==/*10+*/5*Player::level)
+                int EnemyMultiplier = 0;
+                if (Player::level == 1) {
+                    EnemyMultiplier = 1;
+                } else if (Player::level == 2) {
+                    EnemyMultiplier = 2;
+                } else if (Player::level == 3) {
+                    EnemyMultiplier = 3;
+                } else if (Player::level == 4) {
+                    EnemyMultiplier = 4;
+                } else if (Player::level == 5) {
+                    EnemyMultiplier = 5;
+                }
+                if (Player::scoreValue==(5*Player::level)+EnemyMultiplier)
                 {
                     if (Player::level < 5) {
                         QMessageBox win;

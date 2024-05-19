@@ -10,10 +10,7 @@
 #include "missile.h"
 #include <QPushButton>
 #include <QTimer>
-<<<<<<< HEAD
-=======
 
->>>>>>> be94ccb73b5b0b0f3065dd9d1104951db759ec93
 
 
 
@@ -57,7 +54,7 @@ int main(int argc, char *argv[])
     base->setScale(1.2);
     scene.addItem(base);
 
-    //create rectangle approximately the same size as the base
+    // Create rectangle approximately the same size as the base
     QGraphicsRectItem *rectangle = new QGraphicsRectItem(92, 560, 612, 40);
     scene.addItem(rectangle);
 
@@ -146,24 +143,3 @@ int main(int argc, char *argv[])
 
     return a.exec();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
