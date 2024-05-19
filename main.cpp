@@ -10,22 +10,30 @@
 #include "missile.h"
 #include <QPushButton>
 #include <QTimer>
+<<<<<<< HEAD
+=======
 
-\
+>>>>>>> be94ccb73b5b0b0f3065dd9d1104951db759ec93
+
 
 
 QTimer* timer = nullptr;
 
 void createTimerForEnemies(QGraphicsScene &scene, Player *player) {
-    // Delete the old timer if it exists
+    // Deleting the old timer if it exists
     if (timer != nullptr) {
         timer->stop();
         delete timer;
     }
 
+    for (auto item : scene.items()) {   // deleting previous objects in scene
+        if (dynamic_cast<Enemy*>(item) || dynamic_cast<Missile*>(item)) {
+            scene.removeItem(item);
+            delete item;
+        }
+    }
 
-
-    // Create a new timer with the updated interval
+    // Creating a new timer with the updated interval
     timer = new QTimer();
     QObject::connect(timer, &QTimer::timeout, [&scene, &player]() {
         Enemy* enemy = new Enemy(player->level);
@@ -78,7 +86,6 @@ int main(int argc, char *argv[])
     scene.addItem(health);
 
     // Displaying the level
-    //    int level = 1;
     QGraphicsTextItem* levelLabel = new QGraphicsTextItem;
     levelLabel->setFont(QFont("times", 16));
     levelLabel->setPlainText("Level: " + QString::number(1));
@@ -107,9 +114,9 @@ int main(int argc, char *argv[])
         // Connect Player signal to create missile and explosion
         QObject::connect(player, &Player::spaceBarPressed, [&scene, player]() {
             if (player->bonus) {
-                player->numshoots++;
-                if (player->numshoots > 3) {
-                    player->numshoots = 0;
+                player->numshoots--;
+                if (player->numshoots == -1) {
+                    Player::numshoots=0;
                     player->bonus = false;
                 }
             }
@@ -134,7 +141,7 @@ int main(int argc, char *argv[])
                 createTimerForEnemies(scene, player);
             }
         });
-        levelCheckTimer->start(2000); // Check for level change every 2 seconds
+        levelCheckTimer->start(1000); // Check for level change every second
     }
 
     return a.exec();
